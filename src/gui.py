@@ -133,12 +133,32 @@ class App(ctk.CTk):
 
             self.frames_since_last_action += 1
 
-            if results.multi_hand_landmarks:
-                for hand_landmarks in results.multi_hand_landmarks:
+            if results.multi_hand_landmarks and results.multi_handedness:
+                for hand_landmarks, handedness in zip(results.multi_hand_landmarks, results.multi_handedness):
+                    
+                    # MediaPipe handedness is flipped because we used cv2.flip(image, 1) earlier
+                    # So MediaPipe "Left" actually means the user's physical Right hand
+                    detected_hand = handedness.classification[0].label
+                    physical_hand = "Right" if detected_hand == "Left" else "Left"
+
                     draw_landmarks(image_rgb, hand_landmarks)
                     landmarks = extract_landmarks(hand_landmarks)
                     
                     predicted_char, confidence = self.predictor.predict(landmarks)
+                    
+                    # --- Handedness Filter Logic ---
+                    commands = ["Space", "Delete", "Clear"]
+                    
+                    # If Left hand tries to do a command, ignore it
+                    if physical_hand == "Left" and predicted_char in commands:
+                        confidence = 0.0 # Force reject
+                        predicted_char = f"{predicted_char} (Use Right Hand)"
+                        
+                    # If Right hand tries to do A-Z, ignore it
+                    elif physical_hand == "Right" and predicted_char not in commands:
+                        confidence = 0.0 # Force reject
+                        predicted_char = f"{predicted_char} (Use Left Hand)"
+                    
                     self.last_predicted_char = predicted_char
                     self.prediction_confidence = confidence
                     
