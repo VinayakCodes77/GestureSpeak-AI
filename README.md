@@ -10,7 +10,7 @@ This project utilizes **Google MediaPipe** for robust 3D hand tracking and a hig
 - **Intelligent Text Generation:** Includes smart debouncing and cooldown algorithms to prevent duplicate letter spamming, ensuring clean sentence construction.
 - **Special Commands:** Built-in gestures for `SPACE`, `DELETE`, and `CLEAR` to give users full control over their sentences.
 - **Text-to-Speech (TTS):** Integrated offline voice synthesis to speak the generated sentences out loud at the click of a button.
-- **High Accuracy Filtering:** Enforces a strict >80% confidence threshold to ignore blurry or uncertain frames.
+- **High Accuracy Filtering:** Enforces a strict >85% confidence threshold to ignore blurry or uncertain frames.
 
 ## 🛠️ Technology Stack
 - **Python 3.12**
