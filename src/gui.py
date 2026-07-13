@@ -142,8 +142,8 @@ class App(ctk.CTk):
                     self.conf_progressbar.set(confidence)
                     self.conf_label.configure(text=f"Confidence: {int(confidence*100)}%")
 
-                    # Enforce strictly > 80% confidence and debounce logic
-                    if confidence > 0.80:
+                    # Enforce strictly > 85% confidence and debounce logic
+                    if confidence > 0.85:
                         # Add only if it's a different character OR enough time has passed
                         if predicted_char != self.last_added_char or self.frames_since_last_action > self.action_cooldown:
                             self.process_prediction(predicted_char)
