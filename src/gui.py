@@ -63,6 +63,9 @@ class App(ctk.CTk):
         self.pred_char_label = ctk.CTkLabel(self.control_frame, text="-", font=("Arial", 60, "bold"), text_color="#00a8ff")
         self.pred_char_label.pack(pady=5)
         
+        self.hand_status_label = ctk.CTkLabel(self.control_frame, text="Hand: None", font=("Arial", 16, "italic"), text_color="gray")
+        self.hand_status_label.pack(pady=(0, 10))
+        
         self.conf_progressbar = ctk.CTkProgressBar(self.control_frame)
         self.conf_progressbar.pack(pady=5, padx=20)
         self.conf_progressbar.set(0)
@@ -151,12 +154,17 @@ class App(ctk.CTk):
                     # If Left hand tries to do a command, ignore it
                     if physical_hand == "Left" and predicted_char in commands:
                         confidence = 0.0 # Force reject
-                        predicted_char = f"{predicted_char} (Use Right Hand)"
+                        self.hand_status_label.configure(text="❌ Use Right Hand!", text_color="red")
                         
                     # If Right hand tries to do A-Z, ignore it
                     elif physical_hand == "Right" and predicted_char not in commands:
                         confidence = 0.0 # Force reject
-                        predicted_char = f"{predicted_char} (Use Left Hand)"
+                        self.hand_status_label.configure(text="❌ Use Left Hand!", text_color="red")
+                        
+                    # Valid Handedness
+                    else:
+                        color = "green" if physical_hand == "Right" else "#00a8ff"
+                        self.hand_status_label.configure(text=f"✅ {physical_hand} Hand Active", text_color=color)
                     
                     self.last_predicted_char = predicted_char
                     self.prediction_confidence = confidence
@@ -191,6 +199,7 @@ class App(ctk.CTk):
                     break
             else:
                 self.pred_char_label.configure(text="-")
+                self.hand_status_label.configure(text="Hand: None", text_color="gray")
                 self.conf_progressbar.set(0)
                 self.conf_label.configure(text="Confidence: 0%")
 
