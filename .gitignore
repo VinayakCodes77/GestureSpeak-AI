@@ -1,0 +1,17 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Environments
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# Dataset - Ignoring the heavy Kaggle images and extracted CSVs to avoid GitHub limits
+dataset/
+!dataset/.gitkeep
