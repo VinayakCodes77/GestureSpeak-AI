@@ -29,6 +29,11 @@ class App(ctk.CTk):
         self.frames_since_last_action = 0
         self.action_cooldown = 30 # roughly 1 second at 30 fps
         self.last_added_char = ""
+        
+        # Stability tracking
+        self.current_pending_char = ""
+        self.pending_char_frames = 0
+        self.required_stable_frames = 10 # Must hold the sign for ~10 frames (~0.33s) before it registers
 
         self._setup_ui()
 
@@ -144,11 +149,24 @@ class App(ctk.CTk):
 
                     # Enforce strictly > 85% confidence and debounce logic
                     if confidence > 0.85:
-                        # Add only if it's a different character OR enough time has passed
-                        if predicted_char != self.last_added_char or self.frames_since_last_action > self.action_cooldown:
-                            self.process_prediction(predicted_char)
-                            self.last_added_char = predicted_char
-                            self.frames_since_last_action = 0
+                        if predicted_char == self.current_pending_char:
+                            self.pending_char_frames += 1
+                        else:
+                            self.current_pending_char = predicted_char
+                            self.pending_char_frames = 1
+                            
+                        # If the sign has been held steadily for the required frames
+                        if self.pending_char_frames >= self.required_stable_frames:
+                            # Add only if it's a different character OR enough time has passed
+                            if predicted_char != self.last_added_char or self.frames_since_last_action > self.action_cooldown:
+                                self.process_prediction(predicted_char)
+                                self.last_added_char = predicted_char
+                                self.frames_since_last_action = 0
+                                self.pending_char_frames = 0 # Reset so it doesn't double-trigger
+                    else:
+                        # Reset stability if confidence drops
+                        self.pending_char_frames = 0
+                        self.current_pending_char = ""
                     
                     # Only process one hand
                     break
