@@ -136,10 +136,9 @@ class App(ctk.CTk):
             if results.multi_hand_landmarks and results.multi_handedness:
                 for hand_landmarks, handedness in zip(results.multi_hand_landmarks, results.multi_handedness):
                     
-                    # MediaPipe handedness is flipped because we used cv2.flip(image, 1) earlier
-                    # So MediaPipe "Left" actually means the user's physical Right hand
-                    detected_hand = handedness.classification[0].label
-                    physical_hand = "Right" if detected_hand == "Left" else "Left"
+                    # We previously tried to reverse this, but MediaPipe's 
+                    # handedness already perfectly matches the physical hand!
+                    physical_hand = handedness.classification[0].label
 
                     draw_landmarks(image_rgb, hand_landmarks)
                     landmarks = extract_landmarks(hand_landmarks)
