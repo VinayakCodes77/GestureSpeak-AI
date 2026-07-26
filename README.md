@@ -44,6 +44,19 @@ Because we engineered a custom Multi-Layer Perceptron (MLP) that trains on mathe
 
 ---
 
+## 🚀 How to Run
+1. Install dependencies:
+```bash
+pip install -r requirements.txt
+```
+
+2. Launch the Application:
+```bash
+python main.py
+```
+
+---
+
 ## 🏗️ System Architecture & Workflow
 
 ### Overall Architecture
@@ -82,19 +95,3 @@ The Neural Network was trained on the maximum capacity of **87,000 real-world 3D
   &nbsp; &nbsp;
   <img src="models/training_history.png" width="45%">
 </p>
-
----
-
-## 🚀 How to Run
-1. Install dependencies:
-```bash
-pip install -r requirements.txt
-```
-
-2. Launch the Application:
-```bash
-python main.py
-```
-
----
-*Built as a B.Tech Project focusing on Accessibility and Machine Learning.*
