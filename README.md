@@ -1,4 +1,4 @@
-# GestureSpeak AI 🤖🤟
+# GestureSpeak AI
 
 [![Python 3.12](https://img.shields.io/badge/Python-3.12-blue.svg?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/)
 [![MediaPipe](https://img.shields.io/badge/MediaPipe-Computer_Vision-orange.svg?style=for-the-badge)](https://developers.google.com/mediapipe)
