@@ -1,5 +1,10 @@
 # GestureSpeak AI 🤖🤟
 
+[![Python 3.12](https://img.shields.io/badge/Python-3.12-blue.svg?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/)
+[![MediaPipe](https://img.shields.io/badge/MediaPipe-Computer_Vision-orange.svg?style=for-the-badge)](https://developers.google.com/mediapipe)
+[![Scikit-Learn](https://img.shields.io/badge/Scikit--Learn-MLP_Network-yellow.svg?style=for-the-badge&logo=scikit-learn&logoColor=white)](https://scikit-learn.org/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg?style=for-the-badge)](https://opensource.org/licenses/MIT)
+
 **GestureSpeak AI** is a Real-time American Sign Language (ASL) Recognition System built for assisting communication between deaf or mute individuals and non-sign-language users. 
 
 This project utilizes **Google MediaPipe** for robust 3D hand tracking and a high-performance **Deep Neural Network (MLP)** for real-time classification, achieving a staggering **99.76% testing accuracy**.
@@ -50,10 +55,17 @@ The system is divided into a Training Pipeline (which processed 87,000 real imag
 
 ### Live Inference Workflow
 This is the strict filtration logic that runs 30 times a second. It prevents the model from rapidly spamming glitches onto the screen by enforcing a triple-check: **Handedness ➔ Confidence ➔ 10-Frame Stability**.
-<br>
-<p align="center">
-  <img src="workflow_diagram.png" alt="Workflow Diagram">
-</p>
+
+```mermaid
+graph TD
+    A([1. Live Webcam Input<br>OpenCV captures 30 FPS video feed<br>and mirrors the image]) --> B[2. Google MediaPipe Tracker<br>Extracts exactly 21 3D joint coordinates<br>generating 63 mathematical features]
+    
+    B --> C{3. MLP Neural Network<br>63 inputs pass through 3 Hidden Layers<br>to predict 1 of 29 gestures}
+    
+    C --> D[4. Strict Logic Filters<br>• Confirms correct physical Handedness<br>• Enforces >85% Confidence threshold<br>• Requires 10-frame prediction stability]
+    
+    D --> E([5. Audio Speakers<br>Verified prediction builds the sentence<br>and pyttsx3 synthesizes offline audio])
+```
 
 ---
 
