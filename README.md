@@ -30,6 +30,15 @@ To prevent accidental typing while doing commands, the AI is programmed to stric
 
 ---
 
+## 🤟 ASL Gesture Guide
+Here is a visual reference for the ASL Alphabet and the Space command supported by the system.
+<br>
+<p align="center">
+  <img src="assets/gesture_guide.jpg" alt="ASL Gesture Guide">
+</p>
+
+---
+
 ## 🛠️ Technology Stack & Hardware
 - **Python 3.12**
 - **OpenCV:** Real-time webcam capture and image processing.
