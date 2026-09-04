@@ -41,4 +41,23 @@ class GesturePredictor:
         confidence = probabilities[class_index]
         
         predicted_class = self.classes[class_index]
+        
+        # --- HEURISTIC FIX FOR D vs O CONFUSION ---
+        # The model sometimes confuses D and O because they look similar.
+        # But physically, in a 'D', the index finger is extended straight UP.
+        # In an 'O', the index finger is curled DOWN to touch the thumb.
+        # We can check the Y coordinate of the Index Finger Tip (Landmark 8 -> index 25)
+        # compared to the Index Finger PIP joint (Landmark 6 -> index 19).
+        # Since Y decreases as it goes UP the screen:
+        # If tip Y is significantly LESS than PIP Y, the finger is extended -> 'D'.
+        if predicted_class in ['D', 'O']:
+            index_tip_y = landmarks[25]
+            index_pip_y = landmarks[19]
+            
+            # If the tip is above the PIP joint (extended upwards)
+            if index_tip_y < index_pip_y - 0.05:
+                predicted_class = 'D'
+            else:
+                predicted_class = 'O'
+                
         return predicted_class, float(confidence)
