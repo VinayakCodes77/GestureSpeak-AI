@@ -2,6 +2,7 @@ import customtkinter as ctk
 import cv2
 from PIL import Image, ImageTk
 import time
+import collections
 from src.utils import init_mediapipe_hands, extract_landmarks, draw_landmarks
 from src.predict import GesturePredictor
 from src.speech import SpeechEngine
@@ -34,6 +35,7 @@ class App(ctk.CTk):
         self.current_pending_char = ""
         self.pending_char_frames = 0
         self.required_stable_frames = 10 # Must hold the sign for ~10 frames (~0.33s) before it registers
+        self.trail_points = collections.deque(maxlen=15) # For AR Neon Trails
 
         self._setup_ui()
 
@@ -143,6 +145,33 @@ class App(ctk.CTk):
                     # handedness already perfectly matches the physical hand!
                     physical_hand = handedness.classification[0].label
 
+                    # --- AR Neon Trails Logic ---
+                    h, w, _ = image_rgb.shape
+                    # Fingertips: Thumb, Index, Middle, Ring, Pinky
+                    tips = [4, 8, 12, 16, 20]
+                    current_points = []
+                    for tip_idx in tips:
+                        lm = hand_landmarks.landmark[tip_idx]
+                        cx, cy = int(lm.x * w), int(lm.y * h)
+                        current_points.append((cx, cy))
+                    
+                    self.trail_points.append(current_points)
+                    
+                    # Draw the trail
+                    # We use a glowing cyan effect
+                    for i in range(1, len(self.trail_points)):
+                        # Thickness increases towards the current frame
+                        thickness = int(np.interp(i, [1, len(self.trail_points)], [1, 8]))
+                        # Opacity simulation via color blending (black to cyan) in RGB
+                        alpha = i / len(self.trail_points)
+                        color = (0, int(255 * alpha), int(255 * alpha)) # Cyan fade
+                        
+                        prev_pts = self.trail_points[i-1]
+                        curr_pts = self.trail_points[i]
+                        for pt1, pt2 in zip(prev_pts, curr_pts):
+                            cv2.line(image_rgb, pt1, pt2, color, thickness, cv2.LINE_AA)
+                            
+                    # Also draw standard skeleton on top
                     draw_landmarks(image_rgb, hand_landmarks)
                     landmarks = extract_landmarks(hand_landmarks)
                     
@@ -202,6 +231,7 @@ class App(ctk.CTk):
                 self.hand_status_label.configure(text="Hand: None", text_color="gray")
                 self.conf_progressbar.set(0)
                 self.conf_label.configure(text="Confidence: 0%")
+                self.trail_points.clear()
 
             # Convert to PIL Image and then to ImageTk
             img = Image.fromarray(image_rgb)
