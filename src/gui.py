@@ -3,6 +3,7 @@ import cv2
 from PIL import Image, ImageTk
 import time
 import collections
+import numpy as np
 from src.utils import init_mediapipe_hands, extract_landmarks, draw_landmarks
 from src.predict import GesturePredictor
 from src.speech import SpeechEngine
