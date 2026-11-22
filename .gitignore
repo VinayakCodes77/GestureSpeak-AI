@@ -15,3 +15,15 @@ venv.bak/
 # Dataset - Ignoring the heavy Kaggle images and extracted CSVs to avoid GitHub limits
 dataset/
 !dataset/.gitkeep
+
+# University reports, presentations and assets
+GestureSpeak_AI_*
+*.docx
+*.pptx
+*.pdf
+assets/
+generate_*.py
+make_*.py
+create_*.py
+*Hinglish*
+*.bak

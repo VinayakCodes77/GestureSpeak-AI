@@ -34,7 +34,7 @@ To prevent accidental typing while doing commands, the AI is programmed to stric
 Here is a visual reference for the ASL Alphabet and the Space command supported by the system.
 <br>
 <p align="center">
-  <img src="assets/gesture_guide.jpg" alt="ASL Gesture Guide">
+  <img src="gesture_guide.jpg" alt="ASL Gesture Guide">
 </p>
 
 ---

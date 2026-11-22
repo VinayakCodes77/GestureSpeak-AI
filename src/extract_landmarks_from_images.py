@@ -78,4 +78,4 @@ def extract_from_images(max_images_per_class=200):
             print(f"Warning: MediaPipe could not detect any hands in the images for '{target_class}'.")
 
 if __name__ == "__main__":
-    extract_from_images(max_images_per_class=500)
+    extract_from_images(max_images_per_class=3000)

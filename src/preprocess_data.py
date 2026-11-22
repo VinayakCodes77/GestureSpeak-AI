@@ -21,18 +21,27 @@ def load_and_preprocess_data():
         df_list.append(df)
         
     combined_df = pd.concat(df_list, ignore_index=True)
-    print(f"Total samples combined: {len(combined_df)}")
-    
-    # Split features and labels
+    # Oversample minority classes (like 'Clear' which has 3 samples) to prevent unseen label errors
+    max_count = 3000
+    for label in combined_df['label'].unique():
+        class_df = combined_df[combined_df['label'] == label]
+        if len(class_df) < max_count:
+            # Duplicate the rows to reach max_count
+            repeats = (max_count // len(class_df)) + 1
+            duplicated = pd.concat([class_df] * repeats).head(max_count)
+            # Remove original and append the oversampled ones
+            combined_df = combined_df[combined_df['label'] != label]
+            combined_df = pd.concat([combined_df, duplicated], ignore_index=True)
+
     # Split features and labels - explicit to_numpy to avoid PyArrow split issues
     X = combined_df.iloc[:, :-1].to_numpy(dtype=float)
     y = combined_df.iloc[:, -1].to_numpy(dtype=str)
     
     print(f"Total samples combined: {len(combined_df)}")
     
-    # Split data (70% train, 15% validation, 15% test) without stratify due to small 'Clear' class
-    X_train, X_temp, y_train, y_temp = train_test_split(X, y, test_size=0.3, random_state=42)
-    X_val, X_test, y_val, y_test = train_test_split(X_temp, y_temp, test_size=0.5, random_state=42)
+    # Split data (70% train, 15% validation, 15% test)
+    X_train, X_temp, y_train, y_temp = train_test_split(X, y, test_size=0.3, stratify=y, random_state=42)
+    X_val, X_test, y_val, y_test = train_test_split(X_temp, y_temp, test_size=0.5, stratify=y_temp, random_state=42)
     
     print(f"Training set size: {len(X_train)}")
     print(f"Validation set size: {len(X_val)}")
